@@ -15,17 +15,16 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct(amount)
-    @balance -= amount
-  end
-
   def touch_in
     fail "insufficient balance" if balance < MINIMUM_FARE
+
     @in_journey = true
   end
 
   def touch_out
+    deduct(MINIMUM_FARE)
     @in_journey = false
+
   end
 
   def in_journey?
@@ -37,6 +36,10 @@ class Oystercard
 
   def exceeds_limit?(amount)
     amount + @balance > MAX_CARD_LIMIT
+  end
+
+  def deduct(amount)
+    @balance -= amount
   end
 
 end
