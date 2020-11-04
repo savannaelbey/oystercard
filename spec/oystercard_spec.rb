@@ -13,8 +13,9 @@ describe Oystercard do
       expect(subject.top_up(10)).to eq 10
     end
 
-    it 'raises error if top_up amount + balance is > than £90' do
-      expect { subject.top_up(91) }.to raise_error 'balance can not be more than £90'
+    it "raises error if top_up amount + balance is > than #{Oystercard::MAX_CARD_LIMIT}" do
+      subject.top_up(10)
+      expect { subject.top_up(Oystercard::MAX_CARD_LIMIT) }.to raise_error "Balance can not be more than #{Oystercard::MAX_CARD_LIMIT}"
     end
   end
 
@@ -24,24 +25,26 @@ describe Oystercard do
     end
   end
 
-  #describe '#touch_in' do
-    #it 'tells us the card is being used on journey' do
-      #expect{ subject.touch_in }.to change{subject.in_journey?}.to true
-    #end
-  #end
-
   describe '#in_journey?' do
     it 'tells us if we are not in a journey' do
       expect(subject).to_not be_in_journey
     end
     it 'tells us we are in a journey' do
+      subject.top_up(10)
       subject.touch_in
       expect(subject).to be_in_journey
     end
     it 'tells us we are not in a journey after we have touched out' do
+      subject.top_up(10)
       subject.touch_in
       subject.touch_out
       expect(subject).to_not be_in_journey
+    end
+  end
+
+  describe '#touch_in' do
+    it 'will not touch in if balance is below minimum amount' do
+      expect { subject.touch_in }.to raise_error "insufficient balance"
     end
   end
 
