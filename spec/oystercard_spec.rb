@@ -22,7 +22,29 @@ describe Oystercard do
     it 'deducts money from card' do
       expect{ subject.deduct(10) }.to change{subject.balance}.by -10
     end
-
   end
+
+  #describe '#touch_in' do
+    #it 'tells us the card is being used on journey' do
+      #expect{ subject.touch_in }.to change{subject.in_journey?}.to true
+    #end
+  #end
+
+  describe '#in_journey?' do
+    it 'tells us if we are not in a journey' do
+      expect(subject).to_not be_in_journey
+    end
+    it 'tells us we are in a journey' do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+    it 'tells us we are not in a journey after we have touched out' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject).to_not be_in_journey
+    end
+  end
+
+
 
 end
